@@ -50,6 +50,12 @@ export default function useAuth() {
     }
   }
 
+  function isTokenValid(token: string) {
+    const decoded: JwtPayload = jwt_decode(token);
+    const hasExpired = new Date().valueOf() >= decoded.exp! * 1000;
+    return !hasExpired;
+  }
+
   useEffect(() => {
     const getAccessToken = async () => {
       try {
@@ -57,9 +63,7 @@ export default function useAuth() {
         if (!token) {
           throw new Error('no access token stored');
         }
-        const decoded: JwtPayload = jwt_decode(token);
-        const hasExpired = new Date().valueOf() >= decoded.exp! * 1000;
-        if (hasExpired) {
+        if (!isTokenValid(token)) {
           throw new Error('access token expired');
         }
         await AsyncStorage.setItem('access_token', token);
@@ -72,9 +76,5 @@ export default function useAuth() {
     getAccessToken();
   }, []);
 
-  return [accessToken, loading, refreshAccessToken] as [
-    string | null,
-    boolean,
-    () => Promise<void>,
-  ];
+  return {accessToken, loading, refreshAccessToken};
 }

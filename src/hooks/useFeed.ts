@@ -8,17 +8,24 @@ export default function useFeed() {
   const [feed, setFeed] = useState<FriendsFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [accessToken] = useAuth();
+  const {accessToken, refreshAccessToken} = useAuth();
 
   useEffect(() => {
-    const loadFeed = async () => {
-      setLoading(true);
+    const loadFeed = async (attemptNr: number) => {
       try {
+        if (attemptNr >= 2) {
+          throw new Error('cannot load feed');
+        }
+        setLoading(true);
         const response = await fetch(`${API_BASE_URL}/feeds/friends`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        if (!response.ok) {
+          await refreshAccessToken();
+          loadFeed(attemptNr + 1);
+        }
         const result: FriendsFeedItem[] = await response.json();
         storePosts(result);
         setFeed(result);
@@ -31,9 +38,9 @@ export default function useFeed() {
     };
 
     if (accessToken) {
-      loadFeed();
+      loadFeed(0);
     }
-  }, [accessToken, refreshing]);
+  }, [accessToken, refreshing]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     feed,

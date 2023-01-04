@@ -29,11 +29,11 @@ const App = () => {
     backgroundColor: 'black',
     flex: 1,
   };
-  const [accessToken, loading, refeshAccessToken] = useAuth();
+  const {accessToken, loading, refreshAccessToken} = useAuth();
 
   const setToken = async (token: string) => {
     await AsyncStorage.setItem('refresh_token', token);
-    refeshAccessToken();
+    refreshAccessToken();
   };
 
   return (
