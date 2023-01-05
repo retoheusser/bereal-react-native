@@ -13,7 +13,7 @@ import FeedItemHeader from './FeedItemHeader';
 const FeedItem: React.FC<{
   post: FriendsFeedItem;
 }> = ({post}) => {
-  const [swapped, setSwapped] = useState(false);
+  const [swapped, setSwapped] = useState(true);
   const {width} = useWindowDimensions();
 
   return (
@@ -48,11 +48,15 @@ const styles = StyleSheet.create({
   imageBackground: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'flex-start',
   },
   image: {
     margin: 16,
     width: 75,
     height: 100,
+    borderRadius: 8,
+    borderColor: 'black',
+    borderWidth: 2,
   },
   title: {
     color: 'white',
