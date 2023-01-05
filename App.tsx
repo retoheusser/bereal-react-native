@@ -8,58 +8,59 @@
  * @format
  */
 
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Feed from './src/screens/Feed';
+import UserDetail from './src/screens/UserDetail';
 
-import TokenInput from './src/components/TokenInput';
-import FeedView from './src/components/FeedView';
-import useAuth from './src/hooks/useAuth';
+const Stack = createNativeStackNavigator();
 
-const App = () => {
-  const backgroundStyle = {
-    backgroundColor: 'black',
-    flex: 1,
-  };
-  const {accessToken, loading, refreshAccessToken} = useAuth();
-
-  const setToken = async (token: string) => {
-    await AsyncStorage.setItem('refresh_token', token);
-    refreshAccessToken();
-  };
-
+const App: React.FC = () => {
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={styles.background}>
       <StatusBar barStyle="light-content" backgroundColor="black" />
-      <View style={backgroundStyle}>
-        <Text style={styles.titleSection}>BeFake.</Text>
-        {loading ? (
-          <ActivityIndicator size="large" />
-        ) : accessToken ? (
-          <FeedView />
-        ) : (
-          <TokenInput onTokenStore={setToken} />
-        )}
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: styles.headerTitleStyle,
+            headerStyle: styles.headerStyle,
+          }}>
+          <Stack.Screen
+            name="Feed"
+            component={Feed}
+            options={{
+              title: 'BeFake.',
+            }}
+          />
+          <Stack.Screen
+            name="UserDetail"
+            component={UserDetail}
+            options={{
+              title: 'User',
+              animation: 'slide_from_right',
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  titleSection: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 20,
+  background: {
+    backgroundColor: 'black',
+    flex: 1,
+  },
+  headerTitleStyle: {
     fontWeight: 'bold',
-    padding: 16,
+    color: 'white',
+  },
+  headerStyle: {
+    backgroundColor: 'black',
   },
 });
 

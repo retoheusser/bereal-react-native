@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Linking, Pressable, StyleSheet, Text, View} from 'react-native';
 import {FriendsFeedItem} from '../types/feedItem.type';
@@ -5,6 +6,8 @@ import {FriendsFeedItem} from '../types/feedItem.type';
 const FeedItemHeader: React.FC<{
   post: FriendsFeedItem;
 }> = ({post}) => {
+  const navigation = useNavigation();
+
   async function openLocation() {
     const geoLink = `geo:0,0?q=${post.location._latitude},${post.location._longitude}`;
     const canOpenUrl = await Linking.canOpenURL(geoLink);
@@ -15,13 +18,16 @@ const FeedItemHeader: React.FC<{
 
   return (
     <View style={styles.container}>
-      <Text style={styles.username}>{post.userName}</Text>
+      <Pressable
+        onPress={() => navigation.navigate('UserDetail', {user: post.user})}>
+        <Text style={styles.username}>{post.userName}</Text>
+      </Pressable>
       <View style={styles.metaInfo}>
         <Text style={styles.metaInfo}>
           {post.lateInSeconds ? 'Late' : 'On Time'}
         </Text>
         <Text style={styles.metaInfo}>
-          {new Date(post.takenAt._seconds * 1000).toLocaleTimeString()}
+          {new Date(post.takenAt._seconds * 1000).toLocaleString()}
         </Text>
         <Text style={styles.metaInfo}>Attempts: {post.retakeCounter + 1}</Text>
         {post.location ? (

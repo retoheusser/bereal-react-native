@@ -4,7 +4,7 @@ interface ProfilePicture {
   url: string;
 }
 
-interface User {
+export interface User {
   id: string;
   username: string;
   profilePicture: ProfilePicture;
