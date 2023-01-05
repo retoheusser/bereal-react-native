@@ -25,6 +25,7 @@ export default function useFeed() {
         if (!response.ok) {
           await refreshAccessToken();
           loadFeed(attemptNr + 1);
+          return;
         }
         const result: FriendsFeedItem[] = await response.json();
         storePosts(result);
