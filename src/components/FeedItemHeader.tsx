@@ -16,10 +16,13 @@ const FeedItemHeader: React.FC<{
     }
   }
 
+  function openProfile() {
+    navigation.navigate('UserDetail' as never, {user: post.user} as never);
+  }
+
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => navigation.navigate('UserDetail', {user: post.user})}>
+      <Pressable onPress={openProfile}>
         <Text style={styles.username}>{post.userName}</Text>
       </Pressable>
       <View style={styles.metaInfo}>

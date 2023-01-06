@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, ScrollView, FlatList, View} from 'react-native';
+import {StyleSheet, FlatList, View} from 'react-native';
 import FeedItem from '../components/FeedItem';
 import {FriendsFeedItem, User} from '../types/feedItem.type';
 
@@ -10,7 +10,6 @@ const UserDetail: React.FC = () => {
   const navigation = useNavigation();
   const [userMedia, setUserMedia] = useState<FriendsFeedItem[]>([]);
   const user: User = route.params.user;
-  navigation.setOptions({title: user.username});
 
   useEffect(() => {
     const getAllMedia = async () => {
@@ -29,6 +28,10 @@ const UserDetail: React.FC = () => {
     };
     getAllMedia();
   }, [user]);
+
+  useEffect(() => {
+    navigation.setOptions({title: user.username});
+  });
 
   return (
     <View style={styles.container}>
